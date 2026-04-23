@@ -10,5 +10,15 @@
     "invalidEmail": "Invalid email address",
     "tooSmall": "Must be at least {{count}} characters",
     "tooBig": "Must be at most {{count}} characters"
+  },
+  "signin": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to your HMIS account to continue",
+    "email": "Email address",
+    "emailPlaceholder": "you@hospital.org",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Sign in",
+    "heroAlt": "Hospital patient room"
   }
 }

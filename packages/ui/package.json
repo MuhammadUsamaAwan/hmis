@@ -4,12 +4,13 @@
   "type": "module",
   "exports": {
     "./button": "./src/components/button.tsx",
-    "./spinner": "./src/components/spinner.tsx",
-    "./input": "./src/components/input.tsx",
-    "./textarea": "./src/components/textarea.tsx",
-    "./toast": "./src/components/toast.tsx",
-    "./theme-provider": "./src/components/theme-provider.tsx",
     "./direction": "./src/components/direction.tsx",
+    "./input": "./src/components/input.tsx",
+    "./password-input": "./src/components/password-input.tsx",
+    "./spinner": "./src/components/spinner.tsx",
+    "./textarea": "./src/components/textarea.tsx",
+    "./theme-provider": "./src/components/theme-provider.tsx",
+    "./toast": "./src/components/toast.tsx",
     "./global.css": "./src/styles/global.css"
   },
   "scripts": {
