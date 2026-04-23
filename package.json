@@ -1,0 +1,27 @@
+{
+  "name": "hmis",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "format:check": "biome format",
+    "format:write": "biome format --write",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --write",
+    "check": "biome check",
+    "check:write": "biome check --write",
+    "typecheck": "pnpm -r --aggregate-output typecheck",
+    "dev": "pnpm -r --parallel --aggregate-output dev",
+    "test": "pnpm -r --parallel --aggregate-output test",
+    "storybook": "pnpm -F @app/ui storybook"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.11",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  }
+}
