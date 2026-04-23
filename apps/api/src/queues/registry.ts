@@ -5,12 +5,20 @@ export const jobRegistry = z.discriminatedUnion("name", [
   z.object({
     name: z.literal("logAudit"),
     data: z.object({
-      userId: z.string().nonempty(),
+      userId: z.uuid(),
       tableName: z.enum(auditedTables),
       rowId: z.string().nonempty(),
       action: z.enum(actions),
       oldData: z.unknown().optional(),
       newData: z.unknown().optional(),
+      clientInfo: z.unknown().optional(),
+    }),
+  }),
+  z.object({
+    name: z.literal("signin"),
+    data: z.object({
+      userId: z.uuid(),
+      jti: z.uuid(),
       clientInfo: z.unknown().optional(),
     }),
   }),

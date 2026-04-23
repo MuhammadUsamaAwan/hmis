@@ -8,6 +8,7 @@ import { generateUUID, verifyPassword } from "../lib/crypto";
 import { type Claims, consumeJti, setJti } from "../lib/jwt";
 import { parseUA } from "../lib/ua";
 import { authLimitMiddleware } from "../middleware/rate-limit";
+import { signinProducer } from "../queues";
 import { HttpError } from "../utils/error";
 
 export const authController = new Elysia()
@@ -40,6 +41,7 @@ export const authController = new Elysia()
             jwtAccess.sign(payload),
             jwtRefresh.sign(payload),
             setJti(jti, { ...payload, ...parseUA(headers["user-agent"], ip) }),
+            signinProducer.add({ userId: user.id, jti, clientInfo: parseUA(headers["user-agent"], ip) }),
           ]);
 
           cookie["refresh_token"]?.set({

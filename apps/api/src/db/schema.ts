@@ -14,6 +14,7 @@ export const usersTable = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "string" }),
 });
 
 export const rolesTable = pgTable("roles", {
@@ -64,6 +65,17 @@ export const userRoleTable = pgTable(
  *
  */
 
+export const signinsTable = pgTable("signins", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => usersTable.id),
+  jti: text("jti").notNull(),
+  clientInfo: jsonb("client_info"),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "string" }),
+});
+
 export const ACTIONS = {
   CREATE: "create",
   UPDATE: "update",
@@ -85,7 +97,9 @@ export const auditedTableEnum = pgEnum("audited_table", auditedTables);
 
 export const auditLogTable = pgTable("audit_log", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => usersTable.id),
   tableName: auditedTableEnum("table_name").notNull(),
   rowId: text("row_id").notNull(),
   action: actionEnum("action").notNull(),
