@@ -10,7 +10,7 @@
     "lint:fix": "biome lint --write",
     "check": "biome check",
     "check:write": "biome check --write",
-    "typecheck": "pnpm -r --aggregate-output typecheck",
+    "typecheck": "pnpm -r  --parallel --aggregate-output typecheck",
     "dev": "pnpm -r --parallel --aggregate-output dev",
     "test": "pnpm -r --parallel --aggregate-output test",
     "storybook": "pnpm -F @app/ui storybook"
