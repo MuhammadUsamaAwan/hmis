@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB_NAME="atlas"
+DB_NAME="hmis"
 DB_USER="admin"
 
 # Disconnect all active connections

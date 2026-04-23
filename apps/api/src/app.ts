@@ -1,6 +1,8 @@
 import { Elysia } from "elysia";
 import { helmet } from "elysia-helmet";
 import { env } from "./config/env";
+import { authController } from "./controllers/auth.controller";
+import { userController } from "./controllers/user.controller";
 import { wsController } from "./controllers/ws.controller";
 import { ctx } from "./lib/ctx";
 import { errorHandler } from "./lib/error-handler";
@@ -16,6 +18,8 @@ export function createApp() {
     .use(rateLimitMiddleware())
     .use(ctx)
     .use(errorHandler)
+    .use(authController)
+    .use(userController)
     .use(wsController);
 }
 

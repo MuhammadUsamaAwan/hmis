@@ -8,11 +8,13 @@ import type {
   RoomEvent,
   RoomKey,
 } from "../events/registry";
+import type { Claims } from "./jwt";
 import { log } from "./logger";
 
 export interface Ws {
   send: (data: unknown) => unknown;
   raw: object;
+  data: { claims: Claims };
 }
 
 type IncomingHandler = (ws: Ws, roomKey: string, payload: unknown) => void;
@@ -67,7 +69,8 @@ export class WsHub {
     sender: Ws,
     roomKey: K,
     event: E,
-    payload: EventPayload<KeyToRoom<K>, E>
+    payload: EventPayload<KeyToRoom<K>, E>,
+    exclude: "connection" | "user" = "connection"
   ): void {
     const room = this.rooms.get(roomKey);
     if (room === undefined || room.size === 0) {
@@ -76,7 +79,7 @@ export class WsHub {
 
     const message = JSON.stringify({ event, data: payload });
     for (const ws of room) {
-      if (ws.raw === sender.raw) {
+      if (exclude === "user" ? ws.data.claims.sub === sender.data.claims.sub : ws.raw === sender.raw) {
         continue;
       }
       try {

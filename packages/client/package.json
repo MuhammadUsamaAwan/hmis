@@ -4,6 +4,7 @@
   "type": "module",
   "main": "src/index.ts",
   "exports": {
+    ".": "./src/index.ts",
     "./eden": "./src/lib/eden.ts",
     "./ws": "./src/lib/ws.ts"
   },

@@ -1,0 +1,14 @@
+{
+  "common": {
+    "success": "Success",
+    "error": "Error",
+    "errorFallbackMessage": "An unknown error occurred, please try again later!"
+  },
+  "validation": {
+    "required": "Required",
+    "invalidInput": "Invalid input",
+    "invalidEmail": "Invalid email address",
+    "tooSmall": "Must be at least {{count}} characters",
+    "tooBig": "Must be at most {{count}} characters"
+  }
+}

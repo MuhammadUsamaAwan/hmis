@@ -1,7 +1,8 @@
 import Elysia from "elysia";
 import { hub } from "../events";
+import { authGuard } from "../guards/auth-guard";
 
-export const wsController = new Elysia().ws("/ws", {
+export const wsController = new Elysia().use(authGuard).ws("/ws", {
   open(ws) {
     hub.join("global", ws);
   },

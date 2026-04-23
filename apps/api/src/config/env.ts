@@ -7,6 +7,8 @@ export const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   LOG_LEVEL: z.enum(["debug", "error", "fatal", "info", "silent", "trace", "warn"]).default("debug"),
   DATABASE_URL: z.url(),
+  JWT_ACCESS_SECRET: z.string().nonempty(),
+  JWT_REFRESH_SECRET: z.string().nonempty(),
   REDIS_URL: z.url(),
 });
 
