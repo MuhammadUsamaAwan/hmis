@@ -4,8 +4,9 @@ import Elysia from "elysia";
 import { ctx } from "@/api/lib/ctx";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
-import { verifyPassword } from "../lib/crypto";
-import type { Claims } from "../lib/jwt";
+import { generateUUID, verifyPassword } from "../lib/crypto";
+import { type Claims, consumeJti, setJti } from "../lib/jwt";
+import { parseUA } from "../lib/ua";
 import { authLimitMiddleware } from "../middleware/rate-limit";
 import { HttpError } from "../utils/error";
 
@@ -17,7 +18,7 @@ export const authController = new Elysia()
       .use(authLimitMiddleware)
       .post(
         "/signin",
-        async ({ body, translate, jwtAccess, jwtRefresh, cookie }) => {
+        async ({ body, translate, jwtAccess, jwtRefresh, cookie, headers, ip }) => {
           const [user] = await db
             .select({ id: usersTable.id, passwordHash: usersTable.passwordHash })
             .from(usersTable)
@@ -32,9 +33,14 @@ export const authController = new Elysia()
             throw new HttpError(401, translate("auth.invalidCredentials"));
           }
 
-          const payload: Claims = { sub: user.id };
+          const jti = generateUUID();
+          const payload: Claims = { jti, sub: user.id };
 
-          const [accessToken, refreshToken] = await Promise.all([jwtAccess.sign(payload), jwtRefresh.sign(payload)]);
+          const [accessToken, refreshToken] = await Promise.all([
+            jwtAccess.sign(payload),
+            jwtRefresh.sign(payload),
+            setJti(jti, { ...payload, ...parseUA(headers["user-agent"], ip) }),
+          ]);
 
           cookie["refresh_token"]?.set({
             value: refreshToken,
@@ -50,20 +56,30 @@ export const authController = new Elysia()
         { body: signinSchema }
       )
   )
-  .get("/refresh", async ({ cookie, jwtAccess, jwtRefresh }) => {
+  .get("/refresh", async ({ cookie, jwtAccess, jwtRefresh, headers, ip }) => {
     const refreshToken = cookie["refresh_token"]?.value;
     if (!refreshToken) {
       throw new HttpError(401, "Refresh token invalid or expired");
     }
 
-    const verified = await jwtRefresh.verify(refreshToken as string);
-    if (!verified) {
+    const claims = await jwtRefresh.verify(refreshToken as string);
+    if (!claims) {
       throw new HttpError(401, "Refresh token invalid or expired");
     }
 
-    const payload: Claims = { sub: verified.sub };
+    const consumed = await consumeJti(claims.jti);
+    if (!consumed) {
+      throw new HttpError(401, "Refresh token invalid or expired");
+    }
 
-    const [accessToken, newRefreshToken] = await Promise.all([jwtAccess.sign(payload), jwtRefresh.sign(payload)]);
+    const jti = generateUUID();
+    const payload: Claims = { jti, sub: claims.sub };
+
+    const [accessToken, newRefreshToken] = await Promise.all([
+      jwtAccess.sign(payload),
+      jwtRefresh.sign(payload),
+      setJti(jti, { ...payload, ...parseUA(headers["user-agent"], ip) }),
+    ]);
 
     cookie["refresh_token"]?.set({
       value: newRefreshToken,
@@ -76,6 +92,13 @@ export const authController = new Elysia()
 
     return { accessToken };
   })
-  .post("/signout", async ({ cookie }) => {
+  .post("/signout", async ({ cookie, jwtRefresh }) => {
+    const refreshToken = cookie["refresh_token"]?.value;
     cookie["refresh_token"]?.remove();
+    if (refreshToken) {
+      const claims = await jwtRefresh.verify(refreshToken as string);
+      if (claims) {
+        await consumeJti(claims.jti);
+      }
+    }
   });

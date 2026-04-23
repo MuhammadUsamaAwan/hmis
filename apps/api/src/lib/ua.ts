@@ -6,3 +6,5 @@ export function parseUA(userAgent: string | undefined, ip?: string) {
 
   return { os, browser, device, ip };
 }
+
+export type ClientInfo = ReturnType<typeof parseUA>;

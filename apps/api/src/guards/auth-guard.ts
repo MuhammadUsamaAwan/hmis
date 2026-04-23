@@ -1,5 +1,6 @@
 import type Elysia from "elysia";
 import { ctx } from "../lib/ctx";
+import { type Claims, isJtiRevoked } from "../lib/jwt";
 import { HttpError } from "../utils/error";
 
 export const authGuard = (app: Elysia) =>
@@ -11,12 +12,14 @@ export const authGuard = (app: Elysia) =>
 
     const token = auth.slice(7);
 
-    const verified = await jwtAccess.verify(token);
-    if (!verified) {
+    const claims = await jwtAccess.verify(token);
+    if (!claims) {
+      throw new HttpError(401, "Unauthorized");
+    }
+    const jtiRevoked = await isJtiRevoked(claims.jti);
+    if (jtiRevoked) {
       throw new HttpError(401, "Unauthorized");
     }
 
-    const claims = { sub: verified.sub };
-
-    return { claims };
+    return { claims: claims as Claims };
   });
