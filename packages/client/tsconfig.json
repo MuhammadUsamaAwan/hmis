@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun-types"],
+    "paths": {
+      "@/api/*": ["../../apps/api/src/*"]
+    }
+  },
+  "include": ["src"]
+}
