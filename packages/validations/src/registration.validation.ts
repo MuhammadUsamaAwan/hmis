@@ -2,9 +2,9 @@ import { z } from "zod";
 import { bloodGroups, genders, guardianRelations, maritalStatuses, patientTypes, visitTypes } from "./constants";
 import {
   getCnicSchema,
+  getDateSchema,
   getEmailSchema,
   getPhoneSchema,
-  getPhoneSchemaOptional,
   getStringSchema,
   getStringSchemaOptional,
 } from "./utils";
@@ -17,7 +17,7 @@ export const patientRegistrationSchema = z.object({
   guardianRelation: z.enum(guardianRelations).optional(),
   guardianName: getStringSchemaOptional({ max: 100 }),
   gender: z.enum(genders),
-  dateOfBirth: z.string().date(),
+  dateOfBirth: getDateSchema({ max: new Date().toISOString() }),
   maritalStatus: z.enum(maritalStatuses).optional(),
   bloodGroup: z.enum(bloodGroups).optional(),
   occupation: getStringSchemaOptional({ max: 100 }),
@@ -27,12 +27,12 @@ export const patientRegistrationSchema = z.object({
 
   // Contact
   phone: getPhoneSchema(),
-  alternatePhone: getPhoneSchemaOptional(),
+  alternatePhone: getPhoneSchema().optional(),
   email: getEmailSchema().optional(),
 
   // Emergency contact
   emergencyContactName: getStringSchemaOptional({ max: 100 }),
-  emergencyContactPhone: getPhoneSchemaOptional(),
+  emergencyContactPhone: getPhoneSchema().optional(),
   emergencyContactRelation: getStringSchemaOptional({ max: 50 }),
 
   // Address

@@ -8,8 +8,20 @@
     "required": "Required",
     "invalidInput": "Invalid input",
     "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "invalidCnic": "CNIC must be 13 digits",
+    "invalidDate": "Invalid date",
+    "invalidValue": "Invalid selection",
+    "dateTooEarly": "Date is too early",
+    "dateTooLate": "Date cannot be in the future",
     "tooSmall": "Must be at least {{count}} characters",
-    "tooBig": "Must be at most {{count}} characters"
+    "tooBig": "Must be at most {{count}} characters",
+    "password": {
+      "lowercase": "Must contain at least one lowercase letter",
+      "uppercase": "Must contain at least one uppercase letter",
+      "number": "Must contain at least one number",
+      "specialChar": "Must contain at least one special character"
+    }
   },
   "signin": {
     "title": "Welcome back",

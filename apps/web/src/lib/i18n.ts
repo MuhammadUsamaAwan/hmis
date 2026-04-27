@@ -34,6 +34,7 @@ i18next
     },
   });
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no cleaner way
 export const zodErrorMap: $ZodErrorMap = issue => {
   switch (issue.code) {
     case "invalid_type": {
@@ -51,12 +52,18 @@ export const zodErrorMap: $ZodErrorMap = issue => {
     case "too_big": {
       return i18next.t("validation.tooBig", { count: Number(issue.maximum) });
     }
+    case "invalid_value": {
+      return i18next.t("validation.invalidValue");
+    }
     case "invalid_format": {
       if (issue.format === "email") {
         if (issue.input === "") {
           return i18next.t("validation.required");
         }
         return i18next.t("validation.invalidEmail");
+      }
+      if (issue.format === "date" || issue.format === "datetime") {
+        return i18next.t("validation.invalidDate");
       }
       return i18next.t("validation.invalidInput");
     }
