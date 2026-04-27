@@ -1,7 +1,5 @@
-import { Spinner as ShadcnSpinner } from "@/ui/shadcn/components/ui/spinner";
+import { Spinner as ShadcnSpinner } from "../shadcn/components/ui/spinner";
 
 export type SpinnerProps = React.ComponentProps<"svg">;
 
-export function Spinner(props: SpinnerProps) {
-  return <ShadcnSpinner {...props} />;
-}
+export { ShadcnSpinner as Spinner };
