@@ -1,5 +1,6 @@
+import { actions } from "@app/validations";
 import z from "zod";
-import { actions, auditedTables } from "../db/schema";
+import { auditedTables } from "../db/schema";
 
 export const jobRegistry = z.discriminatedUnion("name", [
   z.object({

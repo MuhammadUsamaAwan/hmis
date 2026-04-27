@@ -1,5 +1,5 @@
-import { permissions } from "@app/validations";
-import { jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { actions, bloodGroups, genders, maritalStatuses, permissions } from "@app/validations";
+import { jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /*
  * ==========================================
@@ -29,7 +29,6 @@ export const permissionEnum = pgEnum("permission", permissions);
 export const permissionsTable = pgTable("permissions", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: permissionEnum("name").notNull().unique(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
 });
 
@@ -76,13 +75,6 @@ export const signinsTable = pgTable("signins", {
   deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "string" }),
 });
 
-export const ACTIONS = {
-  CREATE: "create",
-  UPDATE: "update",
-  DELETE: "delete",
-} as const;
-export const actions = Object.values(ACTIONS) as [Action, ...Action[]];
-export type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
 export const actionEnum = pgEnum("action", actions);
 
 export const AUDITED_TABLES = {
@@ -108,3 +100,99 @@ export const auditLogTable = pgTable("audit_log", {
   clientInfo: jsonb("client_info"),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
 });
+
+/*
+ * ==========================================
+ * OPD — Enums
+ * ==========================================
+ */
+
+export const maritalStatusEnum = pgEnum("marital_status", maritalStatuses);
+
+export const bloodGroupEnum = pgEnum("blood_group", bloodGroups);
+
+export const genderEnum = pgEnum("gender", genders);
+
+/*
+ * ==========================================
+ * Geographic Hierarchy
+ * Country → Province → Division → District → Tehsil -> Union Council
+ * ==========================================
+ */
+
+export const countriesTable = pgTable("countries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+  code: text("code").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+export const provincesTable = pgTable("provinces", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+  countryId: uuid("country_id")
+    .notNull()
+    .references(() => countriesTable.id),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+export const divisionsTable = pgTable("divisions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+  provinceId: uuid("province_id")
+    .notNull()
+    .references(() => provincesTable.id),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+export const districtsTable = pgTable("districts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull().unique(),
+  divisionId: uuid("division_id")
+    .notNull()
+    .references(() => divisionsTable.id),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+export const tehsilsTable = pgTable(
+  "tehsils",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    districtId: uuid("district_id")
+      .notNull()
+      .references(() => districtsTable.id),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  },
+  t => [uniqueIndex().on(t.name, t.districtId)]
+);
+
+/*
+ * ==========================================
+ * OPD — Addresses
+ * ==========================================
+ */
+
+export const addressesTable = pgTable("addresses", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  line1: text("line1").notNull(),
+  line2: text("line2"),
+  area: text("area"),
+  tehsilId: uuid("tehsil_id")
+    .notNull()
+    .references(() => tehsilsTable.id),
+  postalCode: text("postal_code"),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
+
+/*
+ * ==========================================
+ * OPD — Patients
+ * ==========================================
+ */

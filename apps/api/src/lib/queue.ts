@@ -50,7 +50,8 @@ export class JobSystem {
     const worker = new Worker(
       jobKey,
       async (job: Job) => {
-        const data = (jobRegistry.parse({ name: jobKey, data: job.data }) as Extract<RegistryJob, { name: K }>).data;
+        const data = (jobRegistry.parse({ name: jobKey, data: job.data }) as Extract<RegistryJob, { name: K }>)
+          .data as JobData<K>;
         return handler(data, job);
       },
       { connection: this.workerConnection, ...this.options.defaultWorkerOptions }
