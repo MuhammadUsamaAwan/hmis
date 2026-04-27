@@ -52,3 +52,9 @@ export const patientRegistrationSchema = z.object({
 });
 
 export type PatientRegistrationSchema = z.infer<typeof patientRegistrationSchema>;
+
+export const createVisitSchema = z.object({
+  visitType: z.enum(visitTypes).default("general"),
+});
+
+export type CreateVisitSchema = z.infer<typeof createVisitSchema>;
