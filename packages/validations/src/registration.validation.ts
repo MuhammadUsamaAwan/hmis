@@ -41,7 +41,7 @@ export const patientRegistrationSchema = z.object({
       line1: getStringSchema({ max: 200 }),
       line2: getStringSchemaOptional({ max: 200 }),
       area: getStringSchemaOptional({ max: 100 }),
-      tehsilId: z.string().uuid(),
+      tehsilId: z.uuid(),
       postalCode: getStringSchemaOptional({ max: 10 }),
     })
     .optional(),
