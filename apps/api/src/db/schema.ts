@@ -1,5 +1,15 @@
-import { actions, bloodGroups, genders, maritalStatuses, permissions } from "@app/validations";
-import { jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  actions,
+  bloodGroups,
+  genders,
+  guardianRelations,
+  maritalStatuses,
+  patientTypes,
+  permissions,
+  visitStatuses,
+  visitTypes,
+} from "@app/validations";
+import { integer, jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 /*
  * ==========================================
@@ -108,10 +118,12 @@ export const auditLogTable = pgTable("audit_log", {
  */
 
 export const maritalStatusEnum = pgEnum("marital_status", maritalStatuses);
-
 export const bloodGroupEnum = pgEnum("blood_group", bloodGroups);
-
 export const genderEnum = pgEnum("gender", genders);
+export const guardianRelationEnum = pgEnum("guardian_relation", guardianRelations);
+export const patientTypeEnum = pgEnum("patient_type", patientTypes);
+export const visitTypeEnum = pgEnum("visit_type", visitTypes);
+export const visitStatusEnum = pgEnum("visit_status", visitStatuses);
 
 /*
  * ==========================================
@@ -196,3 +208,60 @@ export const addressesTable = pgTable("addresses", {
  * OPD — Patients
  * ==========================================
  */
+
+/**
+ * Monotonic counters for MRN and OPD visit number generation.
+ * Key format: "mrn_YYYY" | "visit_YYYY".
+ * Incremented atomically via ON CONFLICT DO UPDATE.
+ */
+export const countersTable = pgTable("counters", {
+  key: text("key").primaryKey(),
+  value: integer("value").notNull().default(0),
+});
+
+export const patientsTable = pgTable("patients", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  mrn: text("mrn").notNull().unique(),
+
+  firstName: text("first_name").notNull(),
+  middleName: text("middle_name"),
+  lastName: text("last_name").notNull(),
+  guardianRelation: guardianRelationEnum("guardian_relation"),
+  guardianName: text("guardian_name"),
+  gender: genderEnum("gender").notNull(),
+  dateOfBirth: text("date_of_birth").notNull(),
+  maritalStatus: maritalStatusEnum("marital_status"),
+  bloodGroup: bloodGroupEnum("blood_group"),
+  occupation: text("occupation"),
+
+  cnic: text("cnic").unique(),
+
+  phone: text("phone").notNull(),
+  alternatePhone: text("alternate_phone"),
+  email: text("email"),
+
+  emergencyContactName: text("emergency_contact_name"),
+  emergencyContactPhone: text("emergency_contact_phone"),
+  emergencyContactRelation: text("emergency_contact_relation"),
+
+  addressId: uuid("address_id").references(() => addressesTable.id),
+
+  patientType: patientTypeEnum("patient_type").notNull().default("new"),
+
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "string" }),
+});
+
+export const opdVisitsTable = pgTable("opd_visits", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitNumber: text("visit_number").notNull().unique(),
+  patientId: uuid("patient_id")
+    .notNull()
+    .references(() => patientsTable.id),
+  visitType: visitTypeEnum("visit_type").notNull().default("general"),
+  visitStatus: visitStatusEnum("visit_status").notNull().default("scheduled"),
+  visitDate: timestamp("visit_date", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
+});
