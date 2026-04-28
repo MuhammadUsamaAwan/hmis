@@ -128,7 +128,7 @@ export const visitStatusEnum = pgEnum("visit_status", visitStatuses);
 /*
  * ==========================================
  * Geographic Hierarchy
- * Country → Province → Division → District → Tehsil -> Union Council
+ * Country → Province → Division → District → Tehsil
  * ==========================================
  */
 
