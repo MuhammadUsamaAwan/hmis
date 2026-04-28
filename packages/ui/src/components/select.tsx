@@ -23,6 +23,7 @@ interface SelectBaseProps {
   errors?: { message?: string }[];
   showClear?: boolean;
   disabled?: boolean;
+  onBlur?: React.FocusEventHandler;
 }
 
 export interface SelectItem {
@@ -167,6 +168,7 @@ export function Select(props: SelectProps) {
     multiple,
     showClear = true,
     disabled = false,
+    onBlur,
   } = props;
 
   const groups = items ?? [];
@@ -235,7 +237,7 @@ export function Select(props: SelectProps) {
   } as const;
 
   return (
-    <Field data-invalid={isInvalid}>
+    <Field data-invalid={isInvalid} onBlur={onBlur}>
       {label && (
         <FieldLabel htmlFor={name} className="gap-1">
           {label}

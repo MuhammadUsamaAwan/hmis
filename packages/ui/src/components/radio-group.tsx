@@ -26,6 +26,7 @@ export interface RadioGroupProps {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  onBlur?: React.FocusEventHandler;
   disabled?: boolean;
   name?: string;
 }
@@ -40,11 +41,12 @@ export function RadioGroup({
   value,
   defaultValue,
   onValueChange,
+  onBlur,
   disabled,
   name,
 }: RadioGroupProps) {
   return (
-    <FieldSet aria-invalid={isInvalid}>
+    <FieldSet aria-invalid={isInvalid} onBlur={onBlur}>
       {legend && (
         <FieldLegend variant="label">
           {legend}

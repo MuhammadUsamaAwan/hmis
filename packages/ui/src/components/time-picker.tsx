@@ -11,6 +11,7 @@ export interface TimePickerProps {
   errors?: { message?: string }[];
   value?: string;
   onValueChange?: (value: string | undefined) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   disabled?: boolean;
   step?: number;
 }
@@ -24,6 +25,7 @@ export function TimePicker({
   errors,
   value,
   onValueChange,
+  onBlur,
   disabled,
   step,
 }: TimePickerProps) {
@@ -57,6 +59,7 @@ export function TimePicker({
           name={name}
           value={internalValue}
           onChange={handleChange}
+          onBlur={onBlur}
           disabled={disabled}
           aria-invalid={isInvalid}
           step={step}
