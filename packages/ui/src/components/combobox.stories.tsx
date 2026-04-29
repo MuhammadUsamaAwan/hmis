@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Select, type SelectProps } from "./select";
+import { ComboboxField, type SingleComboboxProps } from "./combobox";
 
 const COUNTRIES = [
   {
@@ -13,28 +13,28 @@ const COUNTRIES = [
   },
 ];
 
-const DEPARTMENTS = [
+const GROUPED_OPTIONS = [
   {
-    label: "Medical",
+    label: "Vitals",
     items: [
-      { label: "Cardiology", value: "cardiology" },
-      { label: "Neurology", value: "neurology" },
-      { label: "Oncology", value: "oncology" },
+      { label: "Blood Pressure", value: "bp" },
+      { label: "Heart Rate", value: "hr" },
+      { label: "Temperature", value: "temp" },
     ],
   },
   {
-    label: "Surgical",
+    label: "Labs",
     items: [
-      { label: "Orthopedics", value: "orthopedics" },
-      { label: "General Surgery", value: "general-surgery" },
-      { label: "Cardiac Surgery", value: "cardiac-surgery" },
+      { label: "CBC", value: "cbc" },
+      { label: "Metabolic Panel", value: "bmp" },
+      { label: "Lipid Panel", value: "lipid" },
     ],
   },
 ];
 
 const meta = {
-  title: "Select",
-  component: Select,
+  title: "ComboboxField",
+  component: ComboboxField,
   parameters: {
     layout: "centered",
   },
@@ -47,19 +47,20 @@ const meta = {
     ),
   ],
   argTypes: {
+    multiple: { control: "boolean" },
     disabled: { control: "boolean" },
     isInvalid: { control: "boolean" },
     isRequired: { control: "boolean" },
-    size: { control: "select", options: ["default", "sm"] },
+    showClear: { control: "boolean" },
   },
-} satisfies Meta<SelectProps>;
+} satisfies Meta<SingleComboboxProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    placeholder: "Select a country",
+    placeholder: "Select an option",
     items: COUNTRIES,
   },
 };
@@ -122,26 +123,52 @@ export const Disabled: Story = {
 
 export const Grouped: Story = {
   args: {
-    label: "Department",
-    placeholder: "Select a department",
-    items: DEPARTMENTS,
+    label: "Test / Measurement",
+    placeholder: "Select a test",
+    items: GROUPED_OPTIONS,
   },
 };
 
-export const Small: Story = {
+export const MultiSelect: Story = {
+  render: () => <ComboboxField multiple label="Tests" placeholder="Select tests" items={GROUPED_OPTIONS} />,
+};
+
+export const MultiSelectWithDefaults: Story = {
+  render: () => (
+    <ComboboxField
+      multiple
+      label="Tests"
+      placeholder="Select tests"
+      defaultValue={["bp", "cbc"]}
+      items={GROUPED_OPTIONS}
+    />
+  ),
+};
+
+// 500 ICD-10-like codes across 5 groups
+const ICD_CODES = ["Infectious", "Neoplasms", "Blood Disorders", "Endocrine", "Mental Health"].map(group => ({
+  label: group,
+  items: Array.from({ length: 100 }, (_, i) => ({
+    label: `${group} Condition ${String(i + 1).padStart(3, "0")}`,
+    value: `${group.toLowerCase().replace(/\s/g, "-")}-${i + 1}`,
+  })),
+}));
+
+export const LargeList: Story = {
+  render: () => <ComboboxField label="Diagnosis (ICD-10)" placeholder="Search 500 codes..." items={ICD_CODES} />,
+};
+
+export const LargeListMulti: Story = {
+  render: () => (
+    <ComboboxField multiple label="Diagnoses (ICD-10)" placeholder="Search 500 codes..." items={ICD_CODES} />
+  ),
+};
+
+export const NoClear: Story = {
   args: {
-    placeholder: "Page size",
-    size: "sm",
-    defaultValue: "10",
-    items: [
-      {
-        items: [
-          { label: "10", value: "10" },
-          { label: "20", value: "20" },
-          { label: "50", value: "50" },
-          { label: "100", value: "100" },
-        ],
-      },
-    ],
+    label: "Country",
+    placeholder: "Select a country",
+    showClear: false,
+    items: COUNTRIES,
   },
 };
