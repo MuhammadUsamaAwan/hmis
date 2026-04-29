@@ -1,7 +1,10 @@
 import { userPermissionsQueryOptions } from "@app/client";
 import { useInvalidationListener } from "@app/client/ws";
+import { SidebarInset, SidebarProvider } from "@app/ui/sidebar";
 import { Spinner } from "@app/ui/spinner";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { AppHeader } from "@/web/components/layout/app-header";
+import { AppSidebar } from "@/web/components/layout/app-sidebar";
 import { authStore } from "@/web/lib/auth-store";
 import { queryClient } from "@/web/lib/query-client";
 
@@ -23,5 +26,15 @@ export const Route = createFileRoute("/(protected)")({
 function RouteComponent() {
   useInvalidationListener();
 
-  return <Outlet />;
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <AppHeader />
+        <div className="flex-1 overflow-auto p-4 md:p-6">
+          <Outlet />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

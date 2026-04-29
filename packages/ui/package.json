@@ -35,6 +35,8 @@
     "./combobox": "./src/components/combobox.tsx",
     "./select": "./src/components/select.tsx",
     "./data-table": "./src/components/data-table.tsx",
+    "./sidebar": "./src/components/sidebar.tsx",
+    "./collapsible": "./src/components/collapsible.tsx",
     "./cn": "./src/lib/cn.ts",
     "./use-debounce": "./src/hooks/use-debounce.ts",
     "./global.css": "./src/styles/global.css"
