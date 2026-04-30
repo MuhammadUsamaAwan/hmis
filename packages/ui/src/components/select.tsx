@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shadcn/components/ui/field";
 import {
   SelectContent,
@@ -53,6 +53,16 @@ export function Select({
   items = [],
   size,
 }: SelectProps) {
+  const valueLabelMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const group of items) {
+      for (const option of group.items) {
+        map.set(option.value, option.label);
+      }
+    }
+    return map;
+  }, [items]);
+
   const handleValueChange = useCallback(
     (val: string | null) => {
       if (val !== null) {
@@ -78,7 +88,9 @@ export function Select({
         disabled={disabled}
       >
         <SelectTrigger {...(size && { size })} aria-invalid={isInvalid} aria-required={isRequired}>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder}>
+            {(val: string | null) => (val !== null ? (valueLabelMap.get(val) ?? val) : placeholder)}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {items.map((group, gi) => (

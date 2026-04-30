@@ -22,6 +22,7 @@ i18next
       en: { translation: en },
     },
     fallbackLng: "en",
+    load: "languageOnly",
     detection: {
       order: ["navigator", "querystring", "cookie", "localStorage", "htmlTag", "path", "subdomain"],
       caches: ["localStorage", "cookie"],
