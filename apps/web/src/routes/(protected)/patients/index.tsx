@@ -1,27 +1,97 @@
-import { searchPatientsQueryOptions } from "@app/client";
+import { listPatientsQueryOptions } from "@app/client";
 import { Button } from "@app/ui/button";
-import { DataTable } from "@app/ui/data-table";
-import { Input } from "@app/ui/input";
+import type { ColumnDef, SortingState } from "@app/ui/data-table";
+import { DataTable, DataTableColumnHeader } from "@app/ui/data-table";
+import { formatDate, formatDateTime } from "@app/ui/format";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search } from "lucide-react";
-import { useCallback, useState } from "react";
+import { Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/(protected)/patients/")({
   component: PatientsPage,
 });
 
+interface PatientRow {
+  id: string;
+  mrn: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  gender: string;
+  dateOfBirth: string;
+  phone: string;
+  cnic: string | null;
+  patientType: string;
+  createdAt: string;
+}
+
 function PatientsPage() {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
+  const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
 
-  const { data: patients, isLoading } = useQuery(searchPatientsQueryOptions(search));
+  const sortBy = sorting[0]?.id ?? "createdAt";
+  const sortOrder = sorting[0]?.desc === false ? ("asc" as const) : ("desc" as const);
 
-  const handleSearch = useCallback((val: string) => {
-    setSearch(val);
-  }, []);
+  const { data, isLoading } = useQuery(
+    listPatientsQueryOptions({
+      page: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+      sortBy,
+      sortOrder,
+      ...(search && { q: search }),
+    })
+  );
+
+  const columns = useMemo<ColumnDef<PatientRow, unknown>[]>(
+    () => [
+      {
+        accessorKey: "mrn",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.mrn", "MRN")} />,
+      },
+      {
+        id: "name",
+        header: t("patients.name", "Name"),
+        enableSorting: false,
+        cell: ({ row }) => {
+          const { firstName, middleName, lastName } = row.original;
+          return [firstName, middleName, lastName].filter(Boolean).join(" ");
+        },
+      },
+      {
+        accessorKey: "gender",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.gender", "Gender")} />,
+      },
+      {
+        accessorKey: "dateOfBirth",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.dob", "Date of Birth")} />,
+        cell: ({ getValue }) => formatDate(getValue() as string),
+      },
+      {
+        accessorKey: "phone",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.phone", "Phone")} />,
+      },
+      {
+        accessorKey: "cnic",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.cnic", "CNIC")} />,
+        meta: { label: t("patients.cnic", "CNIC") },
+      },
+      {
+        accessorKey: "patientType",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.patientType", "Type")} />,
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t("patients.createdAt", "Registered")} />,
+        cell: ({ getValue }) => formatDateTime(getValue() as string),
+        meta: { label: t("patients.createdAt", "Registered") },
+      },
+    ],
+    [t]
+  );
 
   return (
     <div className="space-y-6">
@@ -33,41 +103,18 @@ function PatientsPage() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="relative max-w-sm flex-1">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
-          <Input
-            placeholder={t("patients.searchPlaceholder", "Search by MRN, name, phone or CNIC...")}
-            className="pl-9"
-            value={search}
-            onValueChange={handleSearch}
-          />
-        </div>
-      </div>
-
       <DataTable
-        columns={[
-          { header: t("patients.mrn", "MRN"), accessorKey: "mrn" },
-          {
-            header: t("patients.name", "Name"),
-            cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
-          },
-          { header: t("patients.gender", "Gender"), accessorKey: "gender" },
-          { header: t("patients.phone", "Phone"), accessorKey: "phone" },
-          { header: t("patients.patientType", "Type"), accessorKey: "patientType" },
-        ]}
-        data={patients ?? []}
+        columns={columns}
+        data={(data?.data as PatientRow[] | undefined) ?? []}
         isLoading={isLoading}
-        pageCount={1}
+        pageCount={data?.pageCount ?? 1}
         pagination={pagination}
         onPaginationChange={setPagination}
-        emptyState={
-          <div className="py-10 text-center text-muted-foreground">
-            {search
-              ? t("patients.noResults", "No patients found matching your search.")
-              : t("patients.startSearch", "Enter a search term to find patients.")}
-          </div>
-        }
+        sorting={sorting}
+        onSortingChange={setSorting}
+        search={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={t("common.search", "Search...")}
       />
     </div>
   );

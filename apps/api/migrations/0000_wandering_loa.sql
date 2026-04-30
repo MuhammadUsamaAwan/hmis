@@ -85,7 +85,7 @@ CREATE TABLE "patients" (
 	"guardian_relation" "guardian_relation",
 	"guardian_name" text,
 	"gender" "gender" NOT NULL,
-	"date_of_birth" text NOT NULL,
+	"date_of_birth" date NOT NULL,
 	"marital_status" "marital_status",
 	"blood_group" "blood_group",
 	"occupation" text,
@@ -160,6 +160,7 @@ CREATE TABLE "user_role" (
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
 	"email" text NOT NULL,
 	"password_hash" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,

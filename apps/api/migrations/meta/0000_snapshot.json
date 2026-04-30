@@ -1,5 +1,5 @@
 {
-  "id": "28c2ff80-c110-4384-9946-7c92ee945ce5",
+  "id": "b2a6f29b-0d0f-4da5-8ab7-abe597b52d4e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -508,7 +508,7 @@
         },
         "date_of_birth": {
           "name": "date_of_birth",
-          "type": "text",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
@@ -1033,6 +1033,12 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "email": {
           "name": "email",

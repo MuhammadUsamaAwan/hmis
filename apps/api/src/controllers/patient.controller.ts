@@ -1,5 +1,5 @@
 import { createVisitSchema, PERMISSIONS, patientRegistrationSchema } from "@app/validations";
-import { eq, ilike, isNull, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, isNull, or, type SQL } from "drizzle-orm";
 import Elysia from "elysia";
 import { z } from "zod";
 import { db } from "../db";
@@ -10,41 +10,79 @@ import { generateMrn, generateVisitNumber } from "../lib/mrn";
 import { HttpError } from "../utils/error";
 import { stripEmpty } from "../utils/sanitize";
 
+const sortableColumns = {
+  mrn: patientsTable.mrn,
+  firstName: patientsTable.firstName,
+  lastName: patientsTable.lastName,
+  gender: patientsTable.gender,
+  dateOfBirth: patientsTable.dateOfBirth,
+  phone: patientsTable.phone,
+  cnic: patientsTable.cnic,
+  patientType: patientsTable.patientType,
+  createdAt: patientsTable.createdAt,
+} as const;
+
 export const patientController = new Elysia({ prefix: "/patients" })
   .use(authGuard)
   .get(
-    "/search",
+    "/",
     async ({ query }) => {
-      const q = `%${query.q}%`;
+      const { page, pageSize, sortBy, sortOrder, q } = query;
+      const offset = page * pageSize;
 
-      return db
-        .select({
-          id: patientsTable.id,
-          mrn: patientsTable.mrn,
-          firstName: patientsTable.firstName,
-          middleName: patientsTable.middleName,
-          lastName: patientsTable.lastName,
-          gender: patientsTable.gender,
-          dateOfBirth: patientsTable.dateOfBirth,
-          phone: patientsTable.phone,
-          cnic: patientsTable.cnic,
-          patientType: patientsTable.patientType,
-        })
-        .from(patientsTable)
-        .where(
+      const conditions: SQL[] = [isNull(patientsTable.deletedAt)];
+      if (q) {
+        const like = `%${q}%`;
+        conditions.push(
           or(
-            ilike(patientsTable.mrn, q),
-            ilike(patientsTable.phone, q),
-            ilike(patientsTable.cnic, q),
-            ilike(patientsTable.firstName, q),
-            ilike(patientsTable.lastName, q)
-          ) && isNull(patientsTable.deletedAt)
-        )
-        .limit(20);
+            ilike(patientsTable.mrn, like),
+            ilike(patientsTable.phone, like),
+            ilike(patientsTable.cnic, like),
+            ilike(patientsTable.firstName, like),
+            ilike(patientsTable.lastName, like)
+          ) as SQL<unknown>
+        );
+      }
+
+      const where = and(...conditions);
+      const col = sortableColumns[sortBy as keyof typeof sortableColumns];
+      const orderBy = sortOrder === "asc" ? asc(col) : desc(col);
+
+      const [data, [totalRow]] = await Promise.all([
+        db
+          .select({
+            id: patientsTable.id,
+            mrn: patientsTable.mrn,
+            firstName: patientsTable.firstName,
+            middleName: patientsTable.middleName,
+            lastName: patientsTable.lastName,
+            gender: patientsTable.gender,
+            dateOfBirth: patientsTable.dateOfBirth,
+            phone: patientsTable.phone,
+            cnic: patientsTable.cnic,
+            patientType: patientsTable.patientType,
+            createdAt: patientsTable.createdAt,
+          })
+          .from(patientsTable)
+          .where(where)
+          .orderBy(orderBy)
+          .limit(pageSize)
+          .offset(offset),
+        db.select({ total: count() }).from(patientsTable).where(where),
+      ]);
+
+      const total = totalRow?.total ?? 0;
+      return { data, total, pageCount: Math.ceil(total / pageSize) };
     },
     {
       beforeHandle: requirePermissions(PERMISSIONS.VIEW_PATIENTS),
-      query: z.object({ q: z.string().min(1) }),
+      query: z.object({
+        page: z.coerce.number().int().min(0).default(0),
+        pageSize: z.coerce.number().int().min(1).max(100).default(20),
+        sortBy: z.enum(Object.keys(sortableColumns) as [string, ...string[]]).default("createdAt"),
+        sortOrder: z.enum(["asc", "desc"]).default("desc"),
+        q: z.string().optional(),
+      }),
     }
   )
   .post(

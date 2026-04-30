@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1777275605397,
-      "tag": "0000_whole_hulk",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1777529133358,
-      "tag": "0001_thankful_dark_phoenix",
+      "when": 1777564253890,
+      "tag": "0000_wandering_loa",
       "breakpoints": true
     }
   ]

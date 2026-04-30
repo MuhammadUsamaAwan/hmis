@@ -2,7 +2,9 @@
   "common": {
     "success": "Success",
     "error": "Error",
-    "errorFallbackMessage": "An unknown error occurred, please try again later!"
+    "errorFallbackMessage": "An unknown error occurred, please try again later!",
+    "search": "Search...",
+    "cancel": "Cancel"
   },
   "validation": {
     "required": "Required",
@@ -34,7 +36,25 @@
     "heroAlt": "Hospital patient room"
   },
   "account": {
-    "profileUpdated": "Profile Updated"
+    "title": "Account",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "profileUpdated": "Profile Updated",
+    "profile": "Profile",
+    "profileTitle": "Profile",
+    "profileDescription": "Manage your personal information",
+    "saveProfile": "Save Profile",
+    "security": "Security",
+    "securityTitle": "Security",
+    "securityDescription": "Manage your password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "changePassword": "Change Password",
+    "passwordChanged": "Password Changed"
   },
   "patients": {
     "title": "Patients",
@@ -44,25 +64,37 @@
     "registeredSuccessfully": "Patient registered successfully",
     "demographics": "Demographics",
     "firstName": "First Name",
+    "firstNamePlaceholder": "Enter first name",
     "lastName": "Last Name",
+    "lastNamePlaceholder": "Enter last name",
     "middleName": "Middle Name",
+    "middleNamePlaceholder": "Enter middle name",
     "gender": "Gender",
     "dateOfBirth": "Date of Birth",
+    "dob": "DOB",
     "guardianRelation": "Guardian Relation",
     "guardianName": "Guardian Name",
+    "guardianNamePlaceholder": "Enter guardian name",
     "maritalStatus": "Marital Status",
     "bloodGroup": "Blood Group",
     "occupation": "Occupation",
-    "identification": "Identification",
+    "occupationPlaceholder": "Enter occupation",
     "cnic": "CNIC",
+    "cnicPlaceholder": "Enter CNIC",
     "contact": "Contact Information",
     "phone": "Phone Number",
+    "phonePlaceholder": "Enter phone number",
     "alternatePhone": "Alternate Phone",
+    "alternatePhonePlaceholder": "Enter alternate phone",
     "email": "Email",
+    "emailPlaceholder": "Enter email",
     "emergencyContact": "Emergency Contact",
     "emergencyName": "Contact Name",
+    "emergencyNamePlaceholder": "Enter contact name",
     "emergencyPhone": "Phone",
+    "emergencyPhonePlaceholder": "Enter phone number",
     "emergencyRelation": "Relation",
+    "emergencyRelationPlaceholder": "Enter relation",
     "address": "Address",
     "addressLine1": "Address Line 1",
     "addressLine1Placeholder": "Street address",
@@ -79,25 +111,6 @@
     "visitType": "Visit Type",
     "mrn": "MRN",
     "name": "Name",
-    "searchPlaceholder": "Search by MRN, name, phone or CNIC...",
-    "noResults": "No patients found matching your search.",
-    "startSearch": "Enter a search term to find patients.",
-    "genders": {
-      "male": "Male",
-      "female": "Female",
-      "other": "Other"
-    },
-    "relations": {
-      "son_of": "Son of",
-      "daughter_of": "Daughter of",
-      "wife_of": "Wife of"
-    },
-    "maritalStatuses": {
-      "single": "Single",
-      "married": "Married",
-      "divorced": "Divorced",
-      "widowed": "Widowed",
-      "separated": "Separated"
-    }
+    "createdAt": "Created At"
   }
 }

@@ -6,12 +6,15 @@ import { DatePicker } from "@app/ui/date-picker";
 import { Input } from "@app/ui/input";
 import {
   bloodGroups,
+  GENDERS,
   genders,
   guardianRelations,
   maritalStatuses,
+  PATIENT_TYPES,
   type PatientRegistrationSchema,
   patientRegistrationSchema,
   patientTypes,
+  VISIT_TYPES,
   visitTypes,
 } from "@app/validations";
 import { getFieldProps } from "@app/validations/form";
@@ -45,7 +48,7 @@ function PatientRegistrationPage() {
       firstName: "",
       middleName: "",
       lastName: "",
-      gender: "male" as const,
+      gender: GENDERS.MALE,
       dateOfBirth: "",
       guardianRelation: undefined,
       guardianName: "",
@@ -66,8 +69,8 @@ function PatientRegistrationPage() {
         tehsilId: "",
         postalCode: "",
       },
-      patientType: "new",
-      visitType: "general",
+      patientType: PATIENT_TYPES.NEW,
+      visitType: VISIT_TYPES.GENERAL,
     } as PatientRegistrationSchema,
     validators: {
       // @ts-expect-error known issue with standard schema
@@ -148,7 +151,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.gender", "Gender")}
-                    items={[{ items: genders.map(g => ({ label: t(`patients.genders.${g}`, g), value: g })) }]}
+                    items={[{ items: genders.map(g => ({ label: g, value: g })) }]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -178,9 +181,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.guardianRelation", "Guardian Relation")}
-                    items={[
-                      { items: guardianRelations.map(r => ({ label: t(`patients.relations.${r}`, r), value: r })) },
-                    ]}
+                    items={[{ items: guardianRelations.map(r => ({ label: r, value: r })) }]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -204,7 +205,7 @@ function PatientRegistrationPage() {
                     items={[
                       {
                         items: maritalStatuses.map(s => ({
-                          label: t(`patients.maritalStatuses.${s}`, s),
+                          label: s,
                           value: s,
                         })),
                       },

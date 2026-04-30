@@ -7,10 +7,10 @@ export const permissions = Object.values(PERMISSIONS) as [Permission, ...Permiss
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
 export const ACTIONS = {
-  VIEW: "view",
-  CREATE: "create",
-  UPDATE: "update",
-  DELETE: "delete",
+  VIEW: "View",
+  CREATE: "Create",
+  UPDATE: "Update",
+  DELETE: "Delete",
 } as const;
 export const actions = Object.values(ACTIONS) as [Action, ...Action[]];
 export type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
@@ -29,55 +29,55 @@ export const bloodGroups = Object.values(BLOOD_GROUPS) as [BloodGroup, ...BloodG
 export type BloodGroup = (typeof BLOOD_GROUPS)[keyof typeof BLOOD_GROUPS];
 
 export const GENDERS = {
-  MALE: "male",
-  FEMALE: "female",
-  OTHER: "other",
+  MALE: "Male",
+  FEMALE: "Female",
+  OTHER: "Other",
 } as const;
 export type Gender = (typeof GENDERS)[keyof typeof GENDERS];
 export const genders = Object.values(GENDERS) as [Gender, ...Gender[]];
 
 export const MARITAL_STATUSES = {
-  SINGLE: "single",
-  MARRIED: "married",
-  DIVORCED: "divorced",
-  WIDOWED: "widowed",
-  SEPARATED: "separated",
+  SINGLE: "Single",
+  MARRIED: "Married",
+  DIVORCED: "Divorced",
+  WIDOWED: "Widowed",
+  SEPARATED: "Separated",
 } as const;
 export type MaritalStatus = (typeof MARITAL_STATUSES)[keyof typeof MARITAL_STATUSES];
 export const maritalStatuses = Object.values(MARITAL_STATUSES) as [MaritalStatus, ...MaritalStatus[]];
 
 export const GUARDIAN_RELATIONS = {
-  SON_OF: "son_of",
-  DAUGHTER_OF: "daughter_of",
-  WIFE_OF: "wife_of",
+  SON_OF: "Son of",
+  DAUGHTER_OF: "Daughter of",
+  WIFE_OF: "Wife of",
 } as const;
 export type GuardianRelation = (typeof GUARDIAN_RELATIONS)[keyof typeof GUARDIAN_RELATIONS];
 export const guardianRelations = Object.values(GUARDIAN_RELATIONS) as [GuardianRelation, ...GuardianRelation[]];
 
 export const PATIENT_TYPES = {
-  NEW: "new",
-  REPEAT: "repeat",
-  REFERRED: "referred",
-  CORPORATE: "corporate",
-  GOVERNMENT: "government",
+  NEW: "New",
+  REPEAT: "Repeat",
+  REFERRED: "Referred",
+  CORPORATE: "Corporate",
+  GOVERNMENT: "Government",
 } as const;
 export type PatientType = (typeof PATIENT_TYPES)[keyof typeof PATIENT_TYPES];
 export const patientTypes = Object.values(PATIENT_TYPES) as [PatientType, ...PatientType[]];
 
 export const VISIT_TYPES = {
-  GENERAL: "general",
-  EMERGENCY: "emergency",
-  REVIEW: "review",
+  GENERAL: "General",
+  EMERGENCY: "Emergency",
+  REVIEW: "Review",
 } as const;
 export type VisitType = (typeof VISIT_TYPES)[keyof typeof VISIT_TYPES];
 export const visitTypes = Object.values(VISIT_TYPES) as [VisitType, ...VisitType[]];
 
 export const VISIT_STATUSES = {
-  SCHEDULED: "scheduled",
-  CHECKED_IN: "checked_in",
-  NO_SHOW: "no_show",
-  CANCELLED: "cancelled",
-  COMPLETED: "completed",
+  SCHEDULED: "Scheduled",
+  CHECKED_IN: "Checked In",
+  NO_SHOW: "No Show",
+  CANCELLED: "Cancelled",
+  COMPLETED: "Completed",
 } as const;
 export type VisitStatus = (typeof VISIT_STATUSES)[keyof typeof VISIT_STATUSES];
 export const visitStatuses = Object.values(VISIT_STATUSES) as [VisitStatus, ...VisitStatus[]];

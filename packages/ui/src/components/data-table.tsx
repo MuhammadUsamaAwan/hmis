@@ -822,3 +822,5 @@ export function DataTable<TData>({
     </div>
   );
 }
+
+export type { ColumnDef, SortingState };

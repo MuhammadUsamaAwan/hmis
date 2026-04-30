@@ -39,6 +39,7 @@
     "./sidebar": "./src/components/sidebar.tsx",
     "./collapsible": "./src/components/collapsible.tsx",
     "./cn": "./src/lib/cn.ts",
+    "./format": "./src/lib/format.ts",
     "./use-debounce": "./src/hooks/use-debounce.ts",
     "./global.css": "./src/styles/global.css"
   },

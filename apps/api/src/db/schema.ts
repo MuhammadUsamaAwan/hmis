@@ -9,7 +9,18 @@ import {
   visitStatuses,
   visitTypes,
 } from "@app/validations";
-import { integer, jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  date,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 /*
  * ==========================================
@@ -230,7 +241,7 @@ export const patientsTable = pgTable("patients", {
   guardianRelation: guardianRelationEnum("guardian_relation"),
   guardianName: text("guardian_name"),
   gender: genderEnum("gender").notNull(),
-  dateOfBirth: text("date_of_birth").notNull(),
+  dateOfBirth: date("date_of_birth", { mode: "string" }).notNull(),
   maritalStatus: maritalStatusEnum("marital_status"),
   bloodGroup: bloodGroupEnum("blood_group"),
   occupation: text("occupation"),
