@@ -8,6 +8,7 @@ import { authGuard } from "../guards/auth-guard";
 import { requirePermissions } from "../guards/permission-guard";
 import { generateMrn, generateVisitNumber } from "../lib/mrn";
 import { HttpError } from "../utils/error";
+import { stripEmpty } from "../utils/sanitize";
 
 export const patientController = new Elysia({ prefix: "/patients" })
   .use(authGuard)
@@ -48,7 +49,8 @@ export const patientController = new Elysia({ prefix: "/patients" })
   )
   .post(
     "/register",
-    async ({ body }) => {
+    async ({ body: rawBody }) => {
+      const body = stripEmpty(rawBody);
       const conditions = [eq(patientsTable.phone, body.phone)];
       if (body.cnic) {
         conditions.push(eq(patientsTable.cnic, body.cnic));

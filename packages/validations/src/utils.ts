@@ -9,6 +9,14 @@ export const getStringSchemaOptional = ({ min = 0, max = 50 }: { min?: number; m
 
 export const getEmailSchema = () => z.email();
 
+export const getEmailSchemaOptional = () =>
+  z
+    .string()
+    .refine(val => val === "" || z.email().safeParse(val).success, {
+      params: { i18nKey: "validation.invalidEmail" },
+    })
+    .optional();
+
 export const getPasswordSchema = () =>
   z
     .string()
@@ -29,6 +37,15 @@ export const getPhoneSchema = () =>
       params: { i18nKey: "validation.invalidPhone" },
     });
 
+export const getPhoneSchemaOptional = () =>
+  z
+    .string()
+    .trim()
+    .refine(val => val === "" || parsePhoneNumberFromString(val)?.isValid(), {
+      params: { i18nKey: "validation.invalidPhone" },
+    })
+    .optional();
+
 export const getCnicSchema = () =>
   z
     .string()
@@ -36,6 +53,15 @@ export const getCnicSchema = () =>
     .refine(val => /^[0-9]{13}$/.test(val), {
       params: { i18nKey: "validation.invalidCnic" },
     });
+
+export const getCnicSchemaOptional = () =>
+  z
+    .string()
+    .trim()
+    .refine(val => val === "" || /^[0-9]{13}$/.test(val), {
+      params: { i18nKey: "validation.invalidCnic" },
+    })
+    .optional();
 
 export const getNumberSchema = ({
   min = -Number.NEGATIVE_INFINITY,
@@ -64,3 +90,29 @@ export const getTimeSchema = () =>
     .string()
     .trim()
     .regex(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/);
+
+export const getDateSchemaOptional = ({ min, max }: { min?: string; max?: string } = {}) =>
+  z
+    .string()
+    .refine(val => val === "" || z.iso.datetime().safeParse(val).success, {
+      params: { i18nKey: "validation.invalidDate" },
+    })
+    .refine(val => val === "" || !min || val >= min, { params: { i18nKey: "validation.dateTooEarly" } })
+    .refine(val => val === "" || !max || val <= max, { params: { i18nKey: "validation.dateTooLate" } })
+    .optional();
+
+export const getUuidSchema = () => z.uuid();
+
+export const getUuidSchemaOptional = () =>
+  z
+    .string()
+    .refine(val => val === "" || z.uuid().safeParse(val).success)
+    .optional();
+
+export const getEnumSchema = <T extends readonly [string, ...string[]]>(values: T) => z.enum(values);
+
+export const getEnumSchemaOptional = <T extends readonly [string, ...string[]]>(values: T) =>
+  z
+    .string()
+    .refine((val): val is T[number] => val === "" || (values as readonly string[]).includes(val))
+    .optional();

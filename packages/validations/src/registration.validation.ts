@@ -3,10 +3,14 @@ import { bloodGroups, genders, guardianRelations, maritalStatuses, patientTypes,
 import {
   getCnicSchema,
   getDateSchema,
-  getEmailSchema,
+  getEmailSchemaOptional,
+  getEnumSchema,
+  getEnumSchemaOptional,
   getPhoneSchema,
+  getPhoneSchemaOptional,
   getStringSchema,
   getStringSchemaOptional,
+  getUuidSchema,
 } from "./utils";
 
 export const patientRegistrationSchema = z.object({
@@ -14,12 +18,12 @@ export const patientRegistrationSchema = z.object({
   firstName: getStringSchema({ max: 100 }),
   middleName: getStringSchemaOptional({ max: 100 }),
   lastName: getStringSchema({ max: 100 }),
-  guardianRelation: z.enum(guardianRelations).optional(),
+  guardianRelation: getEnumSchemaOptional(guardianRelations),
   guardianName: getStringSchemaOptional({ max: 100 }),
-  gender: z.enum(genders),
+  gender: getEnumSchema(genders),
   dateOfBirth: getDateSchema({ max: new Date().toISOString() }),
-  maritalStatus: z.enum(maritalStatuses).optional(),
-  bloodGroup: z.enum(bloodGroups).optional(),
+  maritalStatus: getEnumSchemaOptional(maritalStatuses),
+  bloodGroup: getEnumSchemaOptional(bloodGroups),
   occupation: getStringSchemaOptional({ max: 100 }),
 
   // Identification
@@ -27,12 +31,12 @@ export const patientRegistrationSchema = z.object({
 
   // Contact
   phone: getPhoneSchema(),
-  alternatePhone: getPhoneSchema().optional(),
-  email: getEmailSchema().optional(),
+  alternatePhone: getPhoneSchemaOptional(),
+  email: getEmailSchemaOptional(),
 
   // Emergency contact
   emergencyContactName: getStringSchemaOptional({ max: 100 }),
-  emergencyContactPhone: getPhoneSchema().optional(),
+  emergencyContactPhone: getPhoneSchemaOptional(),
   emergencyContactRelation: getStringSchemaOptional({ max: 50 }),
 
   // Address
@@ -41,20 +45,20 @@ export const patientRegistrationSchema = z.object({
       line1: getStringSchema({ max: 200 }),
       line2: getStringSchemaOptional({ max: 200 }),
       area: getStringSchemaOptional({ max: 100 }),
-      tehsilId: z.uuid(),
+      tehsilId: getUuidSchema(),
       postalCode: getStringSchemaOptional({ max: 10 }),
     })
     .optional(),
 
   // Registration
-  patientType: z.enum(patientTypes).default("new"),
-  visitType: z.enum(visitTypes).default("general"),
+  patientType: getEnumSchema(patientTypes).default("new"),
+  visitType: getEnumSchema(visitTypes).default("general"),
 });
 
 export type PatientRegistrationSchema = z.infer<typeof patientRegistrationSchema>;
 
 export const createVisitSchema = z.object({
-  visitType: z.enum(visitTypes).default("general"),
+  visitType: getEnumSchema(visitTypes).default("general"),
 });
 
 export type CreateVisitSchema = z.infer<typeof createVisitSchema>;

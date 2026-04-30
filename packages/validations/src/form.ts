@@ -14,7 +14,36 @@ export function getFieldProps(field: AnyFieldApi, schema: ZodObject) {
   };
 }
 
+function getShape(node: unknown): Record<string, unknown> | null {
+  if (!node || typeof node !== "object") {
+    return null;
+  }
+  if ("shape" in node) {
+    return (node as ZodObject).shape as Record<string, unknown>;
+  }
+  if ("_def" in node) {
+    const inner = (node as { _def: { innerType?: unknown } })._def.innerType;
+    return inner && typeof inner === "object" && "shape" in inner
+      ? ((inner as ZodObject).shape as Record<string, unknown>)
+      : null;
+  }
+  return null;
+}
+
 export function isFieldRequired(schema: ZodObject, path: string) {
-  const field = schema.shape[path];
-  return !(field?.isOptional?.() || field?.isNullable?.());
+  let current: unknown = schema;
+
+  for (const part of String(path).split(".")) {
+    const shape = getShape(current);
+    if (!shape) {
+      return true;
+    }
+    current = shape[part];
+  }
+
+  if (!current || typeof current !== "object") {
+    return true;
+  }
+  const field = current as { isOptional?: () => boolean; isNullable?: () => boolean };
+  return !(field.isOptional?.() || field.isNullable?.());
 }

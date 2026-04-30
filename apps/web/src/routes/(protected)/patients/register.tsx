@@ -70,6 +70,7 @@ function PatientRegistrationPage() {
       visitType: "general",
     } as PatientRegistrationSchema,
     validators: {
+      // @ts-expect-error known issue with standard schema
       onChange: patientRegistrationSchema,
     },
     onSubmit: async ({ value }) => {
@@ -82,7 +83,7 @@ function PatientRegistrationPage() {
   });
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    (e: React.SubmitEvent<HTMLFormElement>) => {
       e.preventDefault();
       form.handleSubmit();
     },
@@ -108,32 +109,20 @@ function PatientRegistrationPage() {
         <h1 className="font-bold text-2xl tracking-tight">{t("patients.registerTitle", "Register New Patient")}</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Demographics */}
-          <Card title={t("patients.demographics", "Demographics")} className="h-fit">
-            <div className="grid gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field name="firstName">
-                  {field => (
-                    <Input
-                      label={t("patients.firstName", "First Name")}
-                      placeholder={t("patients.firstNamePlaceholder", "First name")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="lastName">
-                  {field => (
-                    <Input
-                      label={t("patients.lastName", "Last Name")}
-                      placeholder={t("patients.lastNamePlaceholder", "Last name")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Demographics */}
+        <Card title={t("patients.demographics", "Demographics")} className="lg:col-span-2">
+          <div className="grid gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <form.Field name="firstName">
+                {field => (
+                  <Input
+                    label={t("patients.firstName", "First Name")}
+                    placeholder={t("patients.firstNamePlaceholder", "First name")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
               <form.Field name="middleName">
                 {field => (
                   <Input
@@ -143,79 +132,36 @@ function PatientRegistrationPage() {
                   />
                 )}
               </form.Field>
+              <form.Field name="lastName">
+                {field => (
+                  <Input
+                    label={t("patients.lastName", "Last Name")}
+                    placeholder={t("patients.lastNamePlaceholder", "Last name")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field name="gender">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.gender", "Gender")}
-                      items={[{ items: genders.map(g => ({ label: t(`patients.genders.${g}`, g), value: g })) }]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="dateOfBirth">
-                  {field => (
-                    <DatePicker
-                      label={t("patients.dateOfBirth", "Date of Birth")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                      maxDate={new Date()}
-                    />
-                  )}
-                </form.Field>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field name="guardianRelation">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.guardianRelation", "Guardian Relation")}
-                      items={[
-                        { items: guardianRelations.map(r => ({ label: t(`patients.relations.${r}`, r), value: r })) },
-                      ]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="guardianName">
-                  {field => (
-                    <Input
-                      label={t("patients.guardianName", "Guardian Name")}
-                      placeholder={t("patients.guardianNamePlaceholder", "Guardian name")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field name="maritalStatus">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.maritalStatus", "Marital Status")}
-                      items={[
-                        {
-                          items: maritalStatuses.map(s => ({
-                            label: t(`patients.maritalStatuses.${s}`, s),
-                            value: s,
-                          })),
-                        },
-                      ]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="bloodGroup">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.bloodGroup", "Blood Group")}
-                      items={[{ items: bloodGroups.map(bg => ({ label: bg, value: bg })) }]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-
+            <div className="grid grid-cols-3 gap-4">
+              <form.Field name="gender">
+                {field => (
+                  <ComboboxField
+                    label={t("patients.gender", "Gender")}
+                    items={[{ items: genders.map(g => ({ label: t(`patients.genders.${g}`, g), value: g })) }]}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="dateOfBirth">
+                {field => (
+                  <DatePicker
+                    label={t("patients.dateOfBirth", "Date of Birth")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                    maxDate={new Date()}
+                  />
+                )}
+              </form.Field>
               <form.Field name="occupation">
                 {field => (
                   <Input
@@ -226,171 +172,216 @@ function PatientRegistrationPage() {
                 )}
               </form.Field>
             </div>
-          </Card>
 
-          <div className="space-y-6">
-            {/* Identification */}
-            <Card title={t("patients.identification", "Identification")}>
-              <form.Field name="cnic">
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field name="guardianRelation">
                 {field => (
-                  <Input
-                    label={t("patients.cnic", "CNIC")}
-                    placeholder={t("patients.cnicPlaceholder", "13-digit CNIC")}
+                  <ComboboxField
+                    label={t("patients.guardianRelation", "Guardian Relation")}
+                    items={[
+                      { items: guardianRelations.map(r => ({ label: t(`patients.relations.${r}`, r), value: r })) },
+                    ]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
               </form.Field>
-            </Card>
+              <form.Field name="guardianName">
+                {field => (
+                  <Input
+                    label={t("patients.guardianName", "Guardian Name")}
+                    placeholder={t("patients.guardianNamePlaceholder", "Guardian name")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+            </div>
 
-            {/* Contact */}
-            <Card title={t("patients.contact", "Contact Information")}>
-              <div className="grid gap-4">
-                <form.Field name="phone">
-                  {field => (
-                    <Input
-                      label={t("patients.phone", "Phone Number")}
-                      placeholder={t("patients.phonePlaceholder", "Primary phone number")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="alternatePhone">
-                  {field => (
-                    <Input
-                      label={t("patients.alternatePhone", "Alternate Phone")}
-                      placeholder={t("patients.alternatePhonePlaceholder", "Secondary phone number")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="email">
-                  {field => (
-                    <Input
-                      label={t("patients.email", "Email")}
-                      placeholder={t("patients.emailPlaceholder", "Email address")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-            </Card>
-
-            {/* Emergency Contact */}
-            <Card title={t("patients.emergencyContact", "Emergency Contact")}>
-              <div className="grid gap-4">
-                <form.Field name="emergencyContactName">
-                  {field => (
-                    <Input
-                      label={t("patients.emergencyName", "Contact Name")}
-                      placeholder={t("patients.emergencyNamePlaceholder", "Name of emergency contact")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <div className="grid grid-cols-2 gap-4">
-                  <form.Field name="emergencyContactPhone">
-                    {field => (
-                      <Input
-                        label={t("patients.emergencyPhone", "Phone")}
-                        placeholder={t("patients.emergencyPhonePlaceholder", "Phone number")}
-                        {...getFieldProps(field, patientRegistrationSchema)}
-                      />
-                    )}
-                  </form.Field>
-                  <form.Field name="emergencyContactRelation">
-                    {field => (
-                      <Input
-                        label={t("patients.emergencyRelation", "Relation")}
-                        placeholder={t("patients.emergencyRelationPlaceholder", "e.g. Spouse, Parent")}
-                        {...getFieldProps(field, patientRegistrationSchema)}
-                      />
-                    )}
-                  </form.Field>
-                </div>
-              </div>
-            </Card>
-
-            {/* Address */}
-            <Card title={t("patients.address", "Address")}>
-              <div className="grid gap-4">
-                <form.Field name="address.line1">
-                  {field => (
-                    <Input
-                      label={t("patients.addressLine1", "Address Line 1")}
-                      placeholder={t("patients.addressLine1Placeholder", "Street address")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="address.line2">
-                  {field => (
-                    <Input
-                      label={t("patients.addressLine2", "Address Line 2")}
-                      placeholder={t("patients.addressLine2Placeholder", "Apartment, suite, etc.")}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <div className="grid grid-cols-2 gap-4">
-                  <form.Field name="address.area">
-                    {field => (
-                      <Input
-                        label={t("patients.addressArea", "Area")}
-                        placeholder={t("patients.addressAreaPlaceholder", "Neighborhood")}
-                        {...getFieldProps(field, patientRegistrationSchema)}
-                      />
-                    )}
-                  </form.Field>
-                  <form.Field name="address.postalCode">
-                    {field => (
-                      <Input
-                        label={t("patients.addressPostalCode", "Postal Code")}
-                        placeholder={t("patients.addressPostalCodePlaceholder", "Zip code")}
-                        {...getFieldProps(field, patientRegistrationSchema)}
-                      />
-                    )}
-                  </form.Field>
-                </div>
-                <form.Field name="address.tehsilId">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.addressTehsil", "Tehsil")}
-                      placeholder={t("patients.addressTehsilPlaceholder", "Search and select tehsil")}
-                      items={tehsilOptions}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-            </Card>
-
-            {/* Registration Details */}
-            <Card title={t("patients.registrationDetails", "Registration Details")}>
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field name="patientType">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.patientType", "Patient Type")}
-                      items={[{ items: patientTypes.map(pType => ({ label: pType, value: pType })) }]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="visitType">
-                  {field => (
-                    <ComboboxField
-                      label={t("patients.visitType", "Visit Type")}
-                      items={[{ items: visitTypes.map(vType => ({ label: vType, value: vType })) }]}
-                      {...getFieldProps(field, patientRegistrationSchema)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-            </Card>
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field name="maritalStatus">
+                {field => (
+                  <ComboboxField
+                    label={t("patients.maritalStatus", "Marital Status")}
+                    items={[
+                      {
+                        items: maritalStatuses.map(s => ({
+                          label: t(`patients.maritalStatuses.${s}`, s),
+                          value: s,
+                        })),
+                      },
+                    ]}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="bloodGroup">
+                {field => (
+                  <ComboboxField
+                    label={t("patients.bloodGroup", "Blood Group")}
+                    items={[{ items: bloodGroups.map(bg => ({ label: bg, value: bg })) }]}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+            </div>
           </div>
-        </div>
+        </Card>
 
-        <div className="flex justify-end gap-4">
+        {/* Identification & Contact */}
+        <Card title={t("patients.contact", "Identification & Contact")}>
+          <div className="grid gap-4">
+            <form.Field name="cnic">
+              {field => (
+                <Input
+                  label={t("patients.cnic", "CNIC")}
+                  placeholder={t("patients.cnicPlaceholder", "13-digit CNIC")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <form.Field name="phone">
+              {field => (
+                <Input
+                  label={t("patients.phone", "Phone Number")}
+                  placeholder={t("patients.phonePlaceholder", "Primary phone number")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <form.Field name="alternatePhone">
+              {field => (
+                <Input
+                  label={t("patients.alternatePhone", "Alternate Phone")}
+                  placeholder={t("patients.alternatePhonePlaceholder", "Secondary phone number")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <form.Field name="email">
+              {field => (
+                <Input
+                  label={t("patients.email", "Email")}
+                  placeholder={t("patients.emailPlaceholder", "Email address")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+          </div>
+        </Card>
+
+        {/* Emergency Contact */}
+        <Card title={t("patients.emergencyContact", "Emergency Contact")}>
+          <div className="grid gap-4">
+            <form.Field name="emergencyContactName">
+              {field => (
+                <Input
+                  label={t("patients.emergencyName", "Contact Name")}
+                  placeholder={t("patients.emergencyNamePlaceholder", "Name of emergency contact")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field name="emergencyContactPhone">
+                {field => (
+                  <Input
+                    label={t("patients.emergencyPhone", "Phone")}
+                    placeholder={t("patients.emergencyPhonePlaceholder", "Phone number")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="emergencyContactRelation">
+                {field => (
+                  <Input
+                    label={t("patients.emergencyRelation", "Relation")}
+                    placeholder={t("patients.emergencyRelationPlaceholder", "e.g. Spouse, Parent")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+            </div>
+          </div>
+        </Card>
+
+        {/* Address */}
+        <Card title={t("patients.address", "Address")}>
+          <div className="grid gap-4">
+            <form.Field name="address.line1">
+              {field => (
+                <Input
+                  label={t("patients.addressLine1", "Address Line 1")}
+                  placeholder={t("patients.addressLine1Placeholder", "Street address")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <form.Field name="address.line2">
+              {field => (
+                <Input
+                  label={t("patients.addressLine2", "Address Line 2")}
+                  placeholder={t("patients.addressLine2Placeholder", "Apartment, suite, etc.")}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field name="address.area">
+                {field => (
+                  <Input
+                    label={t("patients.addressArea", "Area")}
+                    placeholder={t("patients.addressAreaPlaceholder", "Neighborhood")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="address.postalCode">
+                {field => (
+                  <Input
+                    label={t("patients.addressPostalCode", "Postal Code")}
+                    placeholder={t("patients.addressPostalCodePlaceholder", "Zip code")}
+                    {...getFieldProps(field, patientRegistrationSchema)}
+                  />
+                )}
+              </form.Field>
+            </div>
+            <form.Field name="address.tehsilId">
+              {field => (
+                <ComboboxField
+                  label={t("patients.addressTehsil", "Tehsil")}
+                  placeholder={t("patients.addressTehsilPlaceholder", "Search and select tehsil")}
+                  items={tehsilOptions}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+          </div>
+        </Card>
+
+        {/* Registration Details */}
+        <Card title={t("patients.registrationDetails", "Registration Details")}>
+          <div className="grid grid-cols-2 gap-4">
+            <form.Field name="patientType">
+              {field => (
+                <ComboboxField
+                  label={t("patients.patientType", "Patient Type")}
+                  items={[{ items: patientTypes.map(pType => ({ label: pType, value: pType })) }]}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+            <form.Field name="visitType">
+              {field => (
+                <ComboboxField
+                  label={t("patients.visitType", "Visit Type")}
+                  items={[{ items: visitTypes.map(vType => ({ label: vType, value: vType })) }]}
+                  {...getFieldProps(field, patientRegistrationSchema)}
+                />
+              )}
+            </form.Field>
+          </div>
+        </Card>
+
+        <div className="flex justify-end gap-4 lg:col-span-2">
           <Button variant="outline" type="button" onClick={handleCancel}>
             {t("common.cancel", "Cancel")}
           </Button>
