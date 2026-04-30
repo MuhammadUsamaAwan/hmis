@@ -1,5 +1,5 @@
 import { toast } from "@app/ui/toast";
-import { MutationCache, QueryClient } from "@tanstack/react-query";
+import { MutationCache, QueryClient, type QueryKey } from "@tanstack/react-query";
 import i18next from "i18next";
 
 declare module "@tanstack/react-query" {
@@ -7,6 +7,7 @@ declare module "@tanstack/react-query" {
     mutationMeta: {
       successMessage?: string;
       showErrorMessage?: true;
+      invalidateQueries?: QueryKey[];
     };
   }
 }
@@ -14,6 +15,7 @@ declare module "@tanstack/react-query" {
 export interface MutationMeta {
   successMessage?: string;
   showErrorMessage?: true;
+  invalidateQueries?: QueryKey | QueryKey[];
 }
 
 export function onMutationSuccess(
@@ -24,6 +26,10 @@ export function onMutationSuccess(
 ): void {
   if (mutation.meta?.successMessage) {
     toast.success(i18next.t("common.success"), { description: mutation.meta.successMessage });
+  }
+  if (mutation.meta?.invalidateQueries) {
+    const keys = mutation.meta.invalidateQueries;
+    queryClient.invalidateQueries({ queryKey: keys });
   }
 }
 

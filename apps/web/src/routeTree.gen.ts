@@ -13,6 +13,7 @@ import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as protectedRouteRouteImport } from './routes/(protected)/route'
 import { Route as protectedIndexRouteImport } from './routes/(protected)/index'
 import { Route as publicSigninRouteImport } from './routes/(public)/signin'
+import { Route as protectedAccountRouteImport } from './routes/(protected)/account'
 
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
@@ -32,12 +33,19 @@ const publicSigninRoute = publicSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const protectedAccountRoute = protectedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => protectedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/account': typeof protectedAccountRoute
   '/signin': typeof publicSigninRoute
   '/': typeof protectedIndexRoute
 }
 export interface FileRoutesByTo {
+  '/account': typeof protectedAccountRoute
   '/signin': typeof publicSigninRoute
   '/': typeof protectedIndexRoute
 }
@@ -45,18 +53,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(protected)': typeof protectedRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
+  '/(protected)/account': typeof protectedAccountRoute
   '/(public)/signin': typeof publicSigninRoute
   '/(protected)/': typeof protectedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/signin' | '/'
+  fullPaths: '/account' | '/signin' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/signin' | '/'
+  to: '/account' | '/signin' | '/'
   id:
     | '__root__'
     | '/(protected)'
     | '/(public)'
+    | '/(protected)/account'
     | '/(public)/signin'
     | '/(protected)/'
   fileRoutesById: FileRoutesById
@@ -96,14 +106,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicSigninRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(protected)/account': {
+      id: '/(protected)/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof protectedAccountRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
   }
 }
 
 interface protectedRouteRouteChildren {
+  protectedAccountRoute: typeof protectedAccountRoute
   protectedIndexRoute: typeof protectedIndexRoute
 }
 
 const protectedRouteRouteChildren: protectedRouteRouteChildren = {
+  protectedAccountRoute: protectedAccountRoute,
   protectedIndexRoute: protectedIndexRoute,
 }
 

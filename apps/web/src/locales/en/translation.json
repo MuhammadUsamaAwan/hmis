@@ -32,5 +32,8 @@
     "passwordPlaceholder": "Enter your password",
     "submit": "Sign in",
     "heroAlt": "Hospital patient room"
+  },
+  "account": {
+    "profileUpdated": "Profile Updated"
   }
 }

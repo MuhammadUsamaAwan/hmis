@@ -12,6 +12,7 @@
     "./sheet": "./src/components/sheet.tsx",
     "./skeleton": "./src/components/skeleton.tsx",
     "./slider": "./src/components/slider.tsx",
+    "./card": "./src/components/card.tsx",
     "./button": "./src/components/button.tsx",
     "./checkbox": "./src/components/checkbox.tsx",
     "./checkbox-group": "./src/components/checkbox-group.tsx",

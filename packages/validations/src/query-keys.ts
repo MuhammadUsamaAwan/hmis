@@ -1,4 +1,5 @@
 export const queryKeys = {
+  me: ["me"] as const,
   permissions: {
     all: ["permissions"] as const,
   },

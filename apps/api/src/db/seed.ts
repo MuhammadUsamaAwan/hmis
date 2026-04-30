@@ -20,6 +20,7 @@ import {
 
 export const SEED_ADMIN = {
   id: "a57c32cc-9c2a-478b-b5b8-f4bc1c1a8add",
+  name: "Admin",
   email: "admin@test.com",
   password: "Admin@123",
 };
@@ -29,7 +30,7 @@ export async function runSeed() {
   const passwordHash = await hashPassword(SEED_ADMIN.password);
   await db
     .insert(usersTable)
-    .values({ id: SEED_ADMIN.id, email: SEED_ADMIN.email, passwordHash })
+    .values({ id: SEED_ADMIN.id, name: SEED_ADMIN.name, email: SEED_ADMIN.email, passwordHash })
     .onConflictDoNothing();
 
   // Roles

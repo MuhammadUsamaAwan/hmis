@@ -1,4 +1,4 @@
-import { userPermissionsQueryOptions } from "@app/client";
+import { meQueryOptions, userPermissionsQueryOptions } from "@app/client";
 import { useInvalidationListener } from "@app/client/ws";
 import { SidebarInset, SidebarProvider } from "@app/ui/sidebar";
 import { Spinner } from "@app/ui/spinner";
@@ -15,7 +15,11 @@ export const Route = createFileRoute("/(protected)")({
       throw redirect({ to: "/signin" });
     }
   },
-  loader: () => queryClient.ensureQueryData(userPermissionsQueryOptions()),
+  loader: () =>
+    Promise.all([
+      queryClient.ensureQueryData(meQueryOptions()),
+      queryClient.ensureQueryData(userPermissionsQueryOptions()),
+    ]),
   pendingComponent: () => (
     <div className="grid min-h-dvh place-content-center">
       <Spinner />

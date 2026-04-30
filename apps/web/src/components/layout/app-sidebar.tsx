@@ -1,4 +1,7 @@
+import { meQueryOptions, signoutMutationOptions } from "@app/client";
+import { Avatar } from "@app/ui/avatar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@app/ui/collapsible";
+import { DropdownMenu } from "@app/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -13,9 +16,13 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  useSidebar,
 } from "@app/ui/sidebar";
-import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronRight, LogOut } from "lucide-react";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { ChevronRight, ChevronsUpDown, LogOut, User } from "lucide-react";
+import { authStore } from "@/web/lib/auth-store";
+import { queryClient } from "@/web/lib/query-client";
 import { hospitalInfo, navGroups } from "./nav-data";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
@@ -68,16 +75,70 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Sign Out">
-              <LogOut />
-              <span>Sign Out</span>
-            </SidebarMenuButton>
+            <UserMenu />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>
+  );
+}
+
+function UserMenu() {
+  const { isMobile } = useSidebar();
+  const { data: user } = useSuspenseQuery(meQueryOptions());
+  const navigate = useNavigate();
+  const { mutate: signout } = useMutation({
+    ...signoutMutationOptions(),
+    onSuccess: async () => {
+      authStore.clearAccessToken();
+      queryClient.clear();
+      await navigate({ to: "/signin" });
+    },
+  });
+
+  return (
+    <DropdownMenu
+      side={isMobile ? "top" : "right"}
+      align="end"
+      sideOffset={4}
+      trigger={
+        <SidebarMenuButton
+          size="lg"
+          tooltip={user.name}
+          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        >
+          <Avatar name={user.name} size="sm" />
+          <div className="grid flex-1 text-start text-sm leading-tight">
+            <span className="truncate font-semibold">{user.name}</span>
+            <span className="truncate text-muted-foreground text-xs">{user.email}</span>
+          </div>
+          <ChevronsUpDown className="ms-auto size-4" />
+        </SidebarMenuButton>
+      }
+      groups={[
+        {
+          items: [
+            {
+              label: "Account",
+              icon: <User className="size-4" />,
+              onClick: () => navigate({ to: "/account" }),
+            },
+          ],
+        },
+        {
+          items: [
+            {
+              label: "Sign Out",
+              icon: <LogOut className="size-4" />,
+              onClick: () => signout(),
+              variant: "destructive",
+            },
+          ],
+        },
+      ]}
+    />
   );
 }
 
