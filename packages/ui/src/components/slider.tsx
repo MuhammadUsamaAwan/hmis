@@ -55,7 +55,7 @@ export function Slider({
     <Field data-invalid={isInvalid}>
       {label && (
         <div className="flex items-center justify-between">
-          <FieldLabel htmlFor={name} className="gap-1">
+          <FieldLabel htmlFor={name} className="w-fit! gap-1">
             {label}
             {isRequired && <span className="text-destructive">*</span>}
           </FieldLabel>

@@ -47,7 +47,7 @@ export function NumberInput({
   return (
     <Field data-invalid={isInvalid}>
       {label && (
-        <FieldLabel htmlFor={resolvedId} className="gap-1">
+        <FieldLabel htmlFor={resolvedId} className="w-fit! gap-1">
           {label}
           {isRequired && <span className="text-destructive">*</span>}
         </FieldLabel>

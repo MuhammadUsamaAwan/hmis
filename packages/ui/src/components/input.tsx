@@ -36,7 +36,7 @@ export function Input({
   return (
     <Field data-invalid={isInvalid}>
       {label && (
-        <FieldLabel htmlFor={name} className="gap-1">
+        <FieldLabel htmlFor={name} className="w-fit! gap-1">
           {label}
           {isRequired && <span className="text-destructive">*</span>}
         </FieldLabel>
