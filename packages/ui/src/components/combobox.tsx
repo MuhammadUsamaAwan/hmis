@@ -9,9 +9,12 @@ import {
   ComboboxInput,
   ComboboxList,
   ComboboxItem as ComboboxPrimitiveItem,
+  ComboboxTrigger,
+  ComboboxValue,
   useComboboxAnchor,
 } from "../shadcn/components/ui/combobox";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../shadcn/components/ui/field";
+import { Button } from "./button";
 
 interface ComboboxFieldBaseProps {
   placeholder?: string;
@@ -21,7 +24,6 @@ interface ComboboxFieldBaseProps {
   isInvalid?: boolean;
   name?: string;
   errors?: { message?: string }[];
-  showClear?: boolean;
   disabled?: boolean;
   onBlur?: React.FocusEventHandler;
 }
@@ -166,7 +168,6 @@ export function ComboboxField(props: ComboboxFieldProps) {
     errors,
     items,
     multiple,
-    showClear = true,
     disabled = false,
     onBlur,
   } = props;
@@ -271,8 +272,18 @@ export function ComboboxField(props: ComboboxFieldProps) {
           onValueChange={handleChange}
           {...sharedComboboxProps}
         >
-          <ComboboxInput placeholder={placeholder} showClear={showClear} />
-          <ComboboxContent>{list}</ComboboxContent>
+          <ComboboxTrigger
+            render={
+              <Button variant="outline" className="justify-between font-normal">
+                <ComboboxValue placeholder={placeholder} />
+              </Button>
+            }
+          />
+
+          <ComboboxContent>
+            <ComboboxInput showTrigger={false} placeholder="Search..." />
+            {list}
+          </ComboboxContent>
         </Combobox>
       )}
 

@@ -51,7 +51,6 @@ const meta = {
     disabled: { control: "boolean" },
     isInvalid: { control: "boolean" },
     isRequired: { control: "boolean" },
-    showClear: { control: "boolean" },
   },
 } satisfies Meta<SingleComboboxProps>;
 
@@ -162,13 +161,4 @@ export const LargeListMulti: Story = {
   render: () => (
     <ComboboxField multiple label="Diagnoses (ICD-10)" placeholder="Search 500 codes..." items={ICD_CODES} />
   ),
-};
-
-export const NoClear: Story = {
-  args: {
-    label: "Country",
-    placeholder: "Select a country",
-    showClear: false,
-    items: COUNTRIES,
-  },
 };
