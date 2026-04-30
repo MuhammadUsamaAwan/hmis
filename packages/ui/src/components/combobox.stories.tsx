@@ -33,7 +33,7 @@ const GROUPED_OPTIONS = [
 ];
 
 const meta = {
-  title: "ComboboxField",
+  title: "Combobox",
   component: ComboboxField,
   parameters: {
     layout: "centered",

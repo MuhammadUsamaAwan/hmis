@@ -14,6 +14,8 @@ import { Route as protectedRouteRouteImport } from './routes/(protected)/route'
 import { Route as protectedIndexRouteImport } from './routes/(protected)/index'
 import { Route as publicSigninRouteImport } from './routes/(public)/signin'
 import { Route as protectedAccountRouteImport } from './routes/(protected)/account'
+import { Route as protectedPatientsIndexRouteImport } from './routes/(protected)/patients/index'
+import { Route as protectedPatientsRegisterRouteImport } from './routes/(protected)/patients/register'
 
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
@@ -38,16 +40,31 @@ const protectedAccountRoute = protectedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => protectedRouteRoute,
 } as any)
+const protectedPatientsIndexRoute = protectedPatientsIndexRouteImport.update({
+  id: '/patients/',
+  path: '/patients/',
+  getParentRoute: () => protectedRouteRoute,
+} as any)
+const protectedPatientsRegisterRoute =
+  protectedPatientsRegisterRouteImport.update({
+    id: '/patients/register',
+    path: '/patients/register',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/account': typeof protectedAccountRoute
   '/signin': typeof publicSigninRoute
   '/': typeof protectedIndexRoute
+  '/patients/register': typeof protectedPatientsRegisterRoute
+  '/patients/': typeof protectedPatientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/account': typeof protectedAccountRoute
   '/signin': typeof publicSigninRoute
   '/': typeof protectedIndexRoute
+  '/patients/register': typeof protectedPatientsRegisterRoute
+  '/patients': typeof protectedPatientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -56,12 +73,14 @@ export interface FileRoutesById {
   '/(protected)/account': typeof protectedAccountRoute
   '/(public)/signin': typeof publicSigninRoute
   '/(protected)/': typeof protectedIndexRoute
+  '/(protected)/patients/register': typeof protectedPatientsRegisterRoute
+  '/(protected)/patients/': typeof protectedPatientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/account' | '/signin' | '/'
+  fullPaths: '/account' | '/signin' | '/' | '/patients/register' | '/patients/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/account' | '/signin' | '/'
+  to: '/account' | '/signin' | '/' | '/patients/register' | '/patients'
   id:
     | '__root__'
     | '/(protected)'
@@ -69,6 +88,8 @@ export interface FileRouteTypes {
     | '/(protected)/account'
     | '/(public)/signin'
     | '/(protected)/'
+    | '/(protected)/patients/register'
+    | '/(protected)/patients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -113,17 +134,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedAccountRouteImport
       parentRoute: typeof protectedRouteRoute
     }
+    '/(protected)/patients/': {
+      id: '/(protected)/patients/'
+      path: '/patients'
+      fullPath: '/patients/'
+      preLoaderRoute: typeof protectedPatientsIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
+    '/(protected)/patients/register': {
+      id: '/(protected)/patients/register'
+      path: '/patients/register'
+      fullPath: '/patients/register'
+      preLoaderRoute: typeof protectedPatientsRegisterRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
   }
 }
 
 interface protectedRouteRouteChildren {
   protectedAccountRoute: typeof protectedAccountRoute
   protectedIndexRoute: typeof protectedIndexRoute
+  protectedPatientsRegisterRoute: typeof protectedPatientsRegisterRoute
+  protectedPatientsIndexRoute: typeof protectedPatientsIndexRoute
 }
 
 const protectedRouteRouteChildren: protectedRouteRouteChildren = {
   protectedAccountRoute: protectedAccountRoute,
   protectedIndexRoute: protectedIndexRoute,
+  protectedPatientsRegisterRoute: protectedPatientsRegisterRoute,
+  protectedPatientsIndexRoute: protectedPatientsIndexRoute,
 }
 
 const protectedRouteRouteWithChildren = protectedRouteRoute._addFileChildren(

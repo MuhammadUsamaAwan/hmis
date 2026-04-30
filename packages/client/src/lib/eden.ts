@@ -94,3 +94,18 @@ export const edenClient = new EdenClient();
 export const configure = edenClient.configure.bind(edenClient);
 export const getEden = edenClient.getEden.bind(edenClient);
 export const getWsUrl = edenClient.getWsUrl.bind(edenClient);
+
+export function throwEdenError(err: unknown) {
+  if (
+    typeof err === "object" &&
+    err &&
+    "value" in err &&
+    typeof err.value === "object" &&
+    err.value &&
+    "message" in err.value &&
+    typeof err.value.message === "string"
+  ) {
+    throw new Error(err.value.message);
+  }
+  throw new Error("An unknown error occurred, please try again later!");
+}

@@ -14,8 +14,11 @@ function isoToDisplay(iso: string): string {
 }
 
 function displayToIso(display: string): string | undefined {
+  if (display.length !== 10) {
+    return;
+  }
   const parsed = parse(display, DISPLAY_FORMAT, new Date());
-  return isValid(parsed) ? format(parsed, "yyyy-MM-dd") : undefined;
+  return isValid(parsed) ? parsed.toISOString() : undefined;
 }
 
 function isoToDate(iso: string): Date | undefined {
@@ -56,8 +59,13 @@ export function DatePicker({
   const [inputValue, setInputValue] = useState(value ? isoToDisplay(value) : "");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value ? isoToDate(value) : undefined);
   const inputRef = useRef<HTMLInputElement>(null);
+  const internalChange = useRef(false);
 
   useEffect(() => {
+    if (internalChange.current) {
+      internalChange.current = false;
+      return;
+    }
     setInputValue(value ? isoToDisplay(value) : "");
     setSelectedDate(value ? isoToDate(value) : undefined);
   }, [value]);
@@ -76,6 +84,7 @@ export function DatePicker({
       if (iso) {
         const date = isoToDate(iso);
         setSelectedDate(date);
+        internalChange.current = true;
         onValueChange?.(iso);
       } else {
         setSelectedDate(undefined);
@@ -98,7 +107,8 @@ export function DatePicker({
     (day: Date | undefined) => {
       setSelectedDate(day);
       if (day) {
-        onValueChange?.(format(day, "yyyy-MM-dd"));
+        internalChange.current = true;
+        onValueChange?.(day.toISOString());
         setInputValue(format(day, DISPLAY_FORMAT));
         setOpen(false);
         requestAnimationFrame(() => inputRef.current?.focus());

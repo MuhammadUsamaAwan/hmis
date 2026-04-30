@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { helmet } from "elysia-helmet";
 import { env } from "./config/env";
 import { authController } from "./controllers/auth.controller";
+import { geoController } from "./controllers/geo.controller";
 import { patientController } from "./controllers/patient.controller";
 import { userController } from "./controllers/user.controller";
 import { wsController } from "./controllers/ws.controller";
@@ -21,6 +22,7 @@ export function createApp() {
     .use(errorHandler)
     .use(authController)
     .use(userController)
+    .use(geoController)
     .use(patientController)
     .use(wsController);
 }

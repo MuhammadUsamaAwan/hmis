@@ -45,13 +45,17 @@ function ProfileForm() {
 
   const { mutateAsync, isPending } = useMutation({
     ...updateProfileMutationOptions(),
-    meta: { showErrorMessage: true, successMessage: t("account.profileUpdated"), invalidateQueries: [queryKeys.me] },
+    meta: {
+      showErrorMessage: true,
+      successMessage: t("account.profileUpdated"),
+      invalidateQueries: [queryKeys.me.all],
+    },
   });
 
   const form = useForm({
     defaultValues: {
-      name: user.name,
-      email: user.email,
+      name: user?.name ?? "",
+      email: user?.email ?? "",
     },
     validators: {
       onChange: updateProfileSchema,
