@@ -121,7 +121,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.firstName", "First Name")}
-                    placeholder={t("patients.firstNamePlaceholder", "First name")}
+                    placeholder={t("patients.firstNamePlaceholder", "Enter first name")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -130,7 +130,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.middleName", "Middle Name")}
-                    placeholder={t("patients.middleNamePlaceholder", "Middle name (optional)")}
+                    placeholder={t("patients.middleNamePlaceholder", "Enter middle name")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -139,7 +139,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.lastName", "Last Name")}
-                    placeholder={t("patients.lastNamePlaceholder", "Last name")}
+                    placeholder={t("patients.lastNamePlaceholder", "Enter last name")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -151,6 +151,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.gender", "Gender")}
+                    placeholder={t("patients.genderPlaceholder", "Select gender")}
                     items={[{ items: genders.map(g => ({ label: g, value: g })) }]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
@@ -169,7 +170,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.occupation", "Occupation")}
-                    placeholder={t("patients.occupationPlaceholder", "Occupation")}
+                    placeholder={t("patients.occupationPlaceholder", "Enter occupation")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -181,6 +182,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.guardianRelation", "Guardian Relation")}
+                    placeholder={t("patients.guardianRelationPlaceholder", "Select relation")}
                     items={[{ items: guardianRelations.map(r => ({ label: r, value: r })) }]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
@@ -202,6 +204,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.maritalStatus", "Marital Status")}
+                    placeholder={t("patients.maritalStatusPlaceholder", "Select marital status")}
                     items={[
                       {
                         items: maritalStatuses.map(s => ({
@@ -218,6 +221,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <ComboboxField
                     label={t("patients.bloodGroup", "Blood Group")}
+                    placeholder={t("patients.bloodGroupPlaceholder", "Select blood group")}
                     items={[{ items: bloodGroups.map(bg => ({ label: bg, value: bg })) }]}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
@@ -228,13 +232,13 @@ function PatientRegistrationPage() {
         </Card>
 
         {/* Identification & Contact */}
-        <Card title={t("patients.contact", "Identification & Contact")}>
+        <Card title={t("patients.contact", "Contact Information")}>
           <div className="grid gap-4">
             <form.Field name="cnic">
               {field => (
                 <Input
                   label={t("patients.cnic", "CNIC")}
-                  placeholder={t("patients.cnicPlaceholder", "13-digit CNIC")}
+                  placeholder={t("patients.cnicPlaceholder", "Enter CNIC")}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
               )}
@@ -243,7 +247,7 @@ function PatientRegistrationPage() {
               {field => (
                 <Input
                   label={t("patients.phone", "Phone Number")}
-                  placeholder={t("patients.phonePlaceholder", "Primary phone number")}
+                  placeholder={t("patients.phonePlaceholder", "Enter phone number")}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
               )}
@@ -252,7 +256,7 @@ function PatientRegistrationPage() {
               {field => (
                 <Input
                   label={t("patients.alternatePhone", "Alternate Phone")}
-                  placeholder={t("patients.alternatePhonePlaceholder", "Secondary phone number")}
+                  placeholder={t("patients.alternatePhonePlaceholder", "Enter alternate phone")}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
               )}
@@ -261,7 +265,7 @@ function PatientRegistrationPage() {
               {field => (
                 <Input
                   label={t("patients.email", "Email")}
-                  placeholder={t("patients.emailPlaceholder", "Email address")}
+                  placeholder={t("patients.emailPlaceholder", "Enter email")}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
               )}
@@ -276,7 +280,7 @@ function PatientRegistrationPage() {
               {field => (
                 <Input
                   label={t("patients.emergencyName", "Contact Name")}
-                  placeholder={t("patients.emergencyNamePlaceholder", "Name of emergency contact")}
+                  placeholder={t("patients.emergencyNamePlaceholder", "Enter contact name")}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
               )}
@@ -286,7 +290,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.emergencyPhone", "Phone")}
-                    placeholder={t("patients.emergencyPhonePlaceholder", "Phone number")}
+                    placeholder={t("patients.emergencyPhonePlaceholder", "Enter phone number")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -295,7 +299,7 @@ function PatientRegistrationPage() {
                 {field => (
                   <Input
                     label={t("patients.emergencyRelation", "Relation")}
-                    placeholder={t("patients.emergencyRelationPlaceholder", "e.g. Spouse, Parent")}
+                    placeholder={t("patients.emergencyRelationPlaceholder", "Enter relation")}
                     {...getFieldProps(field, patientRegistrationSchema)}
                   />
                 )}
@@ -365,6 +369,7 @@ function PatientRegistrationPage() {
               {field => (
                 <ComboboxField
                   label={t("patients.patientType", "Patient Type")}
+                  placeholder={t("patients.patientTypePlaceholder", "Select patient type")}
                   items={[{ items: patientTypes.map(pType => ({ label: pType, value: pType })) }]}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />
@@ -374,6 +379,7 @@ function PatientRegistrationPage() {
               {field => (
                 <ComboboxField
                   label={t("patients.visitType", "Visit Type")}
+                  placeholder={t("patients.visitTypePlaceholder", "Select visit type")}
                   items={[{ items: visitTypes.map(vType => ({ label: vType, value: vType })) }]}
                   {...getFieldProps(field, patientRegistrationSchema)}
                 />

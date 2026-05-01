@@ -274,7 +274,7 @@ export function ComboboxField(props: ComboboxFieldProps) {
         >
           <ComboboxTrigger
             render={
-              <Button variant="outline" className="justify-between font-normal">
+              <Button variant="outline" className="justify-between font-normal data-placeholder:text-muted-foreground">
                 <ComboboxValue placeholder={placeholder} />
               </Button>
             }
